@@ -1,0 +1,47 @@
+<th:block th:fragment="layout(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">CeceWash</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #f0fdfa 100%);
+            background-image:
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(173,100%,76%,0.4) 0px, transparent 50%),
+                radial-gradient(at 40% 100%, hsla(192,100%,70%,0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #1f2937;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</th:block>

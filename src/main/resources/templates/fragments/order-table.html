@@ -1,0 +1,86 @@
+<div class="glass-panel rounded-2xl overflow-hidden" th:fragment="orderTable(items, keyword)">
+    <div class="p-5 border-b border-white/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/20">
+        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <i class="fa-solid fa-list-ul text-primary-600"></i> Daftar Pesanan
+        </h3>
+
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+            <form class="relative flex-1 sm:w-64" th:action="@{/laundry}" method="get">
+                <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Cari pelanggan..." class="w-full pl-10 pr-4 py-2 bg-white/50 border border-white/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:bg-white text-sm backdrop-blur-sm transition-all">
+            </form>
+            <a th:href="@{/laundry/tambah}" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-md shadow-primary-500/20 flex items-center gap-2 text-sm hidden sm:flex">
+                <i class="fa-solid fa-plus"></i> Pesanan Baru
+            </a>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-white/30 text-gray-600 text-xs uppercase tracking-wider border-b border-white/50">
+                <th class="p-4 font-semibold">Pelanggan</th>
+                <th class="p-4 font-semibold">Layanan</th>
+                <th class="p-4 font-semibold text-center">Detail</th>
+                <th class="p-4 font-semibold text-right">Total</th>
+                <th class="p-4 font-semibold text-center">Status</th>
+                <th class="p-4 font-semibold text-center">Aksi</th>
+            </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-white/40">
+            <tr th:each="data : ${items}" class="hover:bg-white/40 transition-colors group">
+                <td class="p-4">
+                    <div class="font-bold text-gray-800" th:text="${data.namaPelanggan}">Nama</div>
+                    <div class="text-xs text-gray-500 font-mono" th:text="${data.nomorHp}">0812</div>
+                </td>
+                <td class="p-4 text-gray-700 font-medium">
+                    <span th:switch="${data.jenisLayanan}">
+                        <span th:case="'REGULER'">Reguler</span>
+                        <span th:case="'SETRIKA'">Setrika</span>
+                        <span th:case="'KILAT'">Kilat</span>
+                        <span th:case="'EXPRESS'">Express</span>
+                        <span th:case="*" th:text="${data.jenisLayanan}"></span>
+                    </span>
+                </td>
+                <td class="p-4 text-center text-gray-600 text-sm" th:text="${data.berat + ' kg'}">0 kg</td>
+                <td class="p-4 text-right font-bold text-gray-800" th:text="${'Rp ' + #numbers.formatInteger(data.totalHarga, 0, 'POINT')}">Rp 0</td>
+                <td class="p-4 text-center">
+                    <span th:switch="${data.status}" class="border px-2.5 py-1 rounded-full text-xs font-semibold">
+                        <span th:case="'BARU'" class="bg-gray-100/80 text-gray-700 border-gray-300/50">Baru</span>
+                        <span th:case="'PROSES'" class="bg-blue-100/80 text-blue-700 border-blue-300/50">Proses</span>
+                        <span th:case="'SELESAI'" class="bg-green-100/80 text-green-700 border-green-300/50">Siap Diambil</span>
+                        <span th:case="'DIAMBIL'" class="bg-emerald-100/80 text-emerald-700 border-emerald-300/50">Diambil</span>
+                        <span th:case="*" class="bg-gray-100/80 text-gray-700 border-gray-300/50" th:text="${data.status}"></span>
+                    </span>
+                </td>
+                <td class="p-4 text-center">
+                    <div class="flex justify-center gap-2">
+                        <a th:href="@{/laundry/edit/{id}(id=${data.id})}" class="text-primary-600 bg-white/50 hover:bg-white p-2 rounded-lg transition-colors border border-primary-100 shadow-sm" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <form th:action="@{/laundry/hapus/{id}(id=${data.id})}" method="post" onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')">
+                            <button type="submit" class="text-red-500 bg-white/50 hover:bg-white p-2 rounded-lg transition-colors border border-red-100 shadow-sm" title="Hapus">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="6" class="py-12 text-center">
+                    <div class="flex flex-col items-center justify-center text-gray-500">
+                        <div class="bg-white/50 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-gray-400 border border-white/60">
+                            <i class="fa-solid fa-box-open text-2xl"></i>
+                        </div>
+                        <h4 class="font-medium mb-1">Belum ada pesanan</h4>
+                        <p class="text-sm mb-4">Tambahkan pesanan baru untuk melihat daftar.</p>
+                        <a th:href="@{/laundry/tambah}" class="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Buat Pesanan
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

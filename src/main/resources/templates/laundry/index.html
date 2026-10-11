@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeceWash - Dashboard Laundry</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #f0fdfa 100%);
+            background-image:
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(173,100%,76%,0.4) 0px, transparent 50%),
+                radial-gradient(at 40% 100%, hsla(192,100%,70%,0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #1f2937;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased h-screen overflow-hidden flex">
+    <div th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></div>
+
+    <div class="md:hidden fixed top-0 left-0 w-full glass-panel z-30 flex items-center justify-between p-4 border-b border-white/60">
+        <div class="flex items-center gap-2 text-primary-700">
+            <i class="fa-solid fa-jug-detergent text-xl"></i>
+            <h1 class="font-bold text-lg">CeceWash</h1>
+        </div>
+        <a th:href="@{/laundry/tambah}" class="bg-primary-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Baru
+        </a>
+    </div>
+
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden pt-16 md:pt-0">
+        <header class="glass-panel px-6 py-4 flex justify-between items-center z-10 hidden md:flex border-b border-white/50 bg-white/30">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800">Halo, Petugas! 👋</h2>
+                <p class="text-sm text-gray-500">Kelola semua pesanan laundry Anda di sini.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <form class="relative hidden sm:block" th:action="@{/laundry}" method="get">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Cari pelanggan..." class="pl-10 pr-4 py-2 bg-white/50 border border-white/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:bg-white text-sm w-64 backdrop-blur-sm transition-all">
+                </form>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                <div th:replace="~{fragments/dashboard-card :: stats(${totalPesanan}, ${jumlahProses}, ${jumlahSelesai})}"></div>
+
+                <div class="glass-panel rounded-2xl p-4 sm:p-6 h-64 sm:h-80 w-full relative">
+                    <canvas id="dashboardChart" th:attr="data-total=${totalPesanan},data-proses=${jumlahProses},data-selesai=${jumlahSelesai}"></canvas>
+                </div>
+
+                <div th:replace="~{fragments/order-table :: orderTable(${daftarLaundry}, ${keyword})}"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('dashboardChart');
+            if (!canvas) return;
+
+            const total = Number(canvas.dataset.total || 0);
+            const proses = Number(canvas.dataset.proses || 0);
+            const selesai = Number(canvas.dataset.selesai || 0);
+
+            const ctx = canvas.getContext('2d');
+            Chart.defaults.color = '#4b5563';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total', 'Proses', 'Selesai'],
+                    datasets: [{
+                        label: 'Jumlah Pesanan',
+                        data: [total, proses, selesai],
+                        backgroundColor: ['rgba(20,184,166,0.6)', 'rgba(59,130,246,0.6)', 'rgba(34,197,94,0.6)'],
+                        borderColor: ['rgb(20,184,166)', 'rgb(59,130,246)', 'rgb(34,197,94)'],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

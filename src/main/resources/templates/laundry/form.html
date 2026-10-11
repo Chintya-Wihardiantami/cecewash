@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${judulForm + ' - CeceWash'}">Form CeceWash</title>
+    <th:block th:replace="~{fragments/layout :: layout(~{::title})}" />
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div th:replace="~{fragments/form-card :: formCard(${judulForm}, ${laundry.id == null} ? @{/laundry/simpan} : @{/laundry/update/{id}(id=${laundry.id})}, ${laundry}, ${laundry.id != null})}"></div>
+
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

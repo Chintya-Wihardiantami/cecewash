@@ -1,0 +1,25 @@
+<div class="glass-panel rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/60" th:fragment="stats(total, proses, selesai)">
+    <div class="w-full sm:w-1/3 text-center py-2 sm:py-0 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-2 shadow-sm">
+            <i class="fa-solid fa-receipt"></i>
+        </div>
+        <p class="text-sm font-medium text-gray-500 mb-1">Total Pesanan</p>
+        <h3 class="text-3xl font-bold text-gray-800" th:text="${total}">0</h3>
+    </div>
+
+    <div class="w-full sm:w-1/3 text-center py-4 sm:py-0 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2 shadow-sm">
+            <i class="fa-solid fa-spinner"></i>
+        </div>
+        <p class="text-sm font-medium text-gray-500 mb-1">Sedang Proses</p>
+        <h3 class="text-3xl font-bold text-gray-800" th:text="${proses}">0</h3>
+    </div>
+
+    <div class="w-full sm:w-1/3 text-center py-2 sm:py-0 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2 shadow-sm">
+            <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <p class="text-sm font-medium text-gray-500 mb-1">Selesai</p>
+        <h3 class="text-3xl font-bold text-gray-800" th:text="${selesai}">0</h3>
+    </div>
+</div>
